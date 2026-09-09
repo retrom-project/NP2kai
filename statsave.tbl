@@ -7,6 +7,9 @@ static const NP2FHDR np2flagdef = {
 						NP2STATUS_VERSION};
 
 static const PROCTBL evtproc[] = {
+#if defined(SUPPORT_HRTIMER)
+			{PROCID('e','h','r','t'), upd4990_hrtimer_proc},
+#endif
 			{PROCID('e','s','c','0'), screendisp},
 			{PROCID('e','s','c','1'), screenvsync},
 			{PROCID('e','p','i','t'), systimer},
@@ -48,6 +51,9 @@ static const PROCTBL evtproc[] = {
 };
 
 static const ENUMTBL evtnum[] = {
+#if defined(SUPPORT_HRTIMER)
+			{PROCID('h','r','t',' '), NEVENT_HRTIMER},
+#endif
 			{PROCID('m','a','i','n'), NEVENT_FLAMES},
 			{PROCID('p','i','t',' '), NEVENT_ITIMER},
 			{PROCID('b','e','e','p'), NEVENT_BEEP},

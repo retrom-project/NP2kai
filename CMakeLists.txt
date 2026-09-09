@@ -11,8 +11,17 @@ project(
 cmake_policy(SET CMP0076 NEW)
 list(APPEND CMAKE_MODULE_PATH "${NP2kai_SOURCE_DIR}/cmake")
 
+option(RETROM_WEB "Build the Retrom browser module" OFF)
+if(RETROM_WEB)
+  add_library(PNG::PNG INTERFACE IMPORTED)
+  target_compile_options(PNG::PNG INTERFACE "SHELL:-s USE_LIBPNG=1")
+  target_link_options(PNG::PNG INTERFACE "SHELL:-s USE_LIBPNG=1")
+endif()
+
 # PkgConfig
-find_package(PkgConfig REQUIRED)
+if(NOT EMSCRIPTEN)
+  find_package(PkgConfig REQUIRED)
+endif()
 
 # Windows
 if(WIN32 OR WIN64 OR MSVC_VERSION OR MINGW OR MSYS OR CYGWIN)
@@ -1589,4 +1598,12 @@ else()
 		endif()
 	endif()
 
+endif()
+
+if(RETROM_WEB)
+  set_target_properties(emnp21kai_sdl2 PROPERTIES OUTPUT_NAME np2kai SUFFIX ".mjs")
+  set_property(TARGET NP2kai_Emscripten_SDL2_base PROPERTY INTERFACE_LINK_LIBRARIES m)
+  target_sources(emnp21kai_sdl2 PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/np2_tickcount.c" "${CMAKE_CURRENT_SOURCE_DIR}/sdl/em/retrom.c")
+  target_compile_definitions(emnp21kai_sdl2 PRIVATE RETROM_WEB=1 USE_EMULARITY_NP2DIR=1)
+  target_link_options(emnp21kai_sdl2 PRIVATE "-g2" "-sASYNCIFY=1" "-sASYNCIFY_STACK_SIZE=131072" "-sALLOW_MEMORY_GROWTH=1" "-sSTACK_SIZE=8388608" "-sMODULARIZE=1" "-sEXPORT_ES6=1" "-sEXPORT_NAME=createNP2kai" "-sINVOKE_RUN=0" "-sEXIT_RUNTIME=1" "-sEXPORTED_RUNTIME_METHODS=['FS','callMain']" "-sENVIRONMENT=web")
 endif()

@@ -1,0 +1,21 @@
+name: Retrom Web candidate
+on:
+  pull_request:
+    branches: ['retrom/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: .github/rpg-runtime/build-candidate.sh "$RUNNER_TEMP/np2kai-candidate"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: np2kai-candidate
+          path: ${{ runner.temp }}/np2kai-candidate
+          if-no-files-found: error

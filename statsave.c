@@ -687,11 +687,12 @@ static int nevent_write(STFLAGH sfh, NEVENTID num) {
       break;
     }
   }
+  if (i == NELEMENTS(evtnum)) { return STATFLAG_FAILURE; }
   nit.clock = g_nevent.item[num].clock;
   nit.flag = g_nevent.item[num].flag;
   nit.proc = g_nevent.item[num].proc;
   if (PROC2NUM(nit.proc, evtproc)) {
-    nit.proc = NULL;
+    return STATFLAG_FAILURE;
   }
   return (statflag_write(sfh, &nit, sizeof(nit)));
 }
@@ -1691,6 +1692,9 @@ int statsave_check(const OEMCHAR *filename, OEMCHAR *buf, int size) {
   done = FALSE;
   ret = STATFLAG_SUCCESS;
   while ((!done) && (ret != STATFLAG_FAILURE)) {
+#if defined(RETROM_WEB)
+    int previous_status = ret;
+#endif
     ret |= statflag_readsection(sffh);
     tbl = np2tbl;
     tblterm = tbl + NELEMENTS(np2tbl);
@@ -1718,6 +1722,9 @@ int statsave_check(const OEMCHAR *filename, OEMCHAR *buf, int size) {
       case STATFLAG_EPSON:
       case STATFLAG_EVT:
       case STATFLAG_EXT:
+#if defined(SUPPORT_BMS)
+      case STATFLAG_BMS:
+#endif
       case STATFLAG_GIJ:
 #if !defined(DISABLE_SOUND)
       case STATFLAG_FM:
@@ -1767,6 +1774,11 @@ int statsave_check(const OEMCHAR *filename, OEMCHAR *buf, int size) {
     } else {
       ret |= STATFLAG_WARNING;
     }
+#if defined(RETROM_WEB)
+    if (ret != previous_status) {
+      fprintf(stderr, "NP2kai state section %.10s failed (%d)\n", sffh->sfh.hdr.index, ret);
+    }
+#endif
   }
   statflag_close(sffh);
   return (ret);
@@ -1840,6 +1852,9 @@ int statsave_load_d(void) {
 
   done = FALSE;
   while ((!done) && (ret != STATFLAG_FAILURE)) {
+#if defined(RETROM_WEB)
+    int previous_status = ret;
+#endif
     ret |= statflag_readsection(sffh);
     tbl = np2tbl + 1;
     tblterm = np2tbl + NELEMENTS(np2tbl);
@@ -1945,6 +1960,11 @@ int statsave_load_d(void) {
     } else {
       ret |= STATFLAG_WARNING;
     }
+#if defined(RETROM_WEB)
+    if (ret != previous_status) {
+      fprintf(stderr, "NP2kai state section %.10s failed (%d)\n", sffh->sfh.hdr.index, ret);
+    }
+#endif
   }
   statflag_close(sffh);
 

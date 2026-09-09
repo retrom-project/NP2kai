@@ -4,6 +4,7 @@
 MOUSEMNG	mousemng;
 #if defined(EMSCRIPTEN) && !defined(__LIBRETRO__)
 int captured=0;
+extern SDL_Window *s_window;
 #endif
 
 UINT8 mousemng_getstat(SINT16 *x, SINT16 *y, int clear) {
@@ -27,11 +28,11 @@ static void mousecapture(BOOL capture) {
 #else
 		SDL_WM_GrabInput(SDL_GRAB_ON);
 #endif
-		mousemng_hidecursor();
+		mousemng_hidecursor(s_window);
 	}	
 	else
 	{
-		mousemng_showcursor();
+		mousemng_showcursor(s_window);
 #if USE_SDL >= 2
 		SDL_CaptureMouse(FALSE);
 #else
