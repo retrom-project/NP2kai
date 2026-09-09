@@ -13,6 +13,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - run: python3 .github/rpg-runtime/verify-source.py && python3 .github/rpg-runtime/test-release.py
       - run: .github/rpg-runtime/build-candidate.sh "$RUNNER_TEMP/np2kai-candidate"
       - uses: actions/upload-artifact@v4
         with:

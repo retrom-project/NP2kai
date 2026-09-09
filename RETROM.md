@@ -43,9 +43,13 @@ separate restored Launch. A successful build alone is not a product compatibilit
 
 ## Publication boundary
 
-This feature supplies an unpublished PFB candidate. Do not create a stable tag or modify upstream
-mirror history as part of local testing. Future releases use immutable
-`retrom-core-g5939e0c6d598-rN[-rc.N]` tags and must include the recorded corresponding source,
-licenses and validated release metadata before the runtime replaces its development input with
-a pinned published release. The current source manifest intentionally rejects ordinary release
-builds while NP2kai remains unpublished.
+Formal releases use immutable annotated `retrom-core-g5939e0c6d598-rN[-rc.N]` tags on commits
+already merged into `retrom/g5939e0c6d598`. Never publish from the `wx_alpha` mirror.
+The release workflow validates ancestry and tag identity, runs the ABI/state/input regressions,
+rebuilds with the pinned SDK, and publishes all five runtime assets with SHA-256 metadata.
+It also publishes `np2kai-source.tar.gz` from the exact tagged commit and `np2kai-build-inputs.tar.gz`
+containing the font input and source archives of the linked SDL2, libpng and zlib ports.
+Both corresponding-source archives are recorded in `sourceFiles` of `rpg-runtime-release.json`;
+`files` lists the runtime-consumed assets. The source archive includes these build scripts and
+license notices. Use `.github/rpg-runtime/build-release.py --help` for local clean-source validation.
+The runtime must pin the published tag, commit and asset hashes before stable aggregation.
