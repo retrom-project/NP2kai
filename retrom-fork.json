@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "forkRepository": "https://github.com/retrom-project/NP2kai",
+  "defaultBranch": "retrom/g5939e0c6d598",
+  "upstreamMirrorBranch": "wx_alpha",
+  "upstreams": [
+    {
+      "role": "np2kai",
+      "repository": "https://github.com/AZO234/NP2kai",
+      "refType": "COMMIT",
+      "ref": "5939e0c6d5985c4c08fc70f289a83290e5d3e6f7",
+      "commit": "5939e0c6d5985c4c08fc70f289a83290e5d3e6f7"
+    }
+  ],
+  "releaseTagPattern": "^retrom-core-g5939e0c6d598-r[1-9][0-9]*(-rc\\.[1-9][0-9]*)?$",
+  "adapterAbi": "np2kai-host-v1",
+  "releaseAssets": [
+    "LICENSE",
+    "font.bmp",
+    "np2kai-register.mjs",
+    "np2kai.mjs",
+    "np2kai.wasm",
+    "rpg-runtime-release.json"
+  ]
+}

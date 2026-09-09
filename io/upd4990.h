@@ -29,6 +29,8 @@ extern "C" {
 #endif
 	
 #if defined(SUPPORT_HRTIMER)
+struct _neventitem;
+void upd4990_hrtimer_proc(struct _neventitem *item);
 void upd4990_hrtimer_count(void);
 #endif
 

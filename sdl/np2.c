@@ -809,8 +809,14 @@ havemmx(void)
 #endif /* GCC_CPU_ARCH_IA32 */
 }
 
+#if defined(RETROM_WEB)
+extern int retrom_paused, retrom_ready, retrom_frames;
+#endif
 static void np2exec()
 {
+#if defined(RETROM_WEB)
+	retrom_ready = 1;
+#endif
 	while(taskmng_isavail()) {
 #if !defined(__LIBRETRO__)
 		if(g_u8ControlState == 1) {
@@ -825,10 +831,16 @@ static void np2exec()
 #if defined(EMSCRIPTEN) && !defined(__LIBRETRO__)
 //		emscripten_sleep_with_yield(0);
 		emscripten_sleep(0);
+#if defined(RETROM_WEB)
+		if (retrom_paused) { continue; }
+#endif
 #endif
 		if (np2oscfg.NOWAIT) {
 			joymng_sync();
 			pccore_exec(framecnt == 0);
+#if defined(RETROM_WEB)
+			retrom_frames++;
+#endif
 			if (np2oscfg.DRAW_SKIP) {			// nowait frame skip
 				framecnt++;
 				if (framecnt >= np2oscfg.DRAW_SKIP) {
@@ -846,6 +858,9 @@ static void np2exec()
 			if (framecnt < np2oscfg.DRAW_SKIP) {
 				joymng_sync();
 				pccore_exec(framecnt == 0);
+#if defined(RETROM_WEB)
+			retrom_frames++;
+#endif
 				framecnt++;
 			}
 			else {
@@ -857,6 +872,9 @@ static void np2exec()
 				UINT cnt;
 				joymng_sync();
 				pccore_exec(framecnt == 0);
+#if defined(RETROM_WEB)
+			retrom_frames++;
+#endif
 				framecnt++;
 				cnt = timing_getcount();
 				if (framecnt > cnt) {

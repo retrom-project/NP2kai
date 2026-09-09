@@ -140,7 +140,12 @@ BRESULT scrnmng_create(UINT8 mode) {
 	} else {
 		s_window = SDL_CreateWindow(app_name, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, scrnmng.width, scrnmng.height, 0);
 	}
+#if defined(RETROM_WEB)
+	/* Software framebuffer remains readable after pause for host screenshots. */
+	s_renderer = SDL_CreateRenderer(s_window, -1, SDL_RENDERER_SOFTWARE);
+#else
 	s_renderer = SDL_CreateRenderer(s_window, -1, 0);
+#endif
 #else
 	s1_videoinfo = SDL_GetVideoInfo();
 	scrnmng.dispsurf = SDL_SetVideoMode(scrnmng.width, scrnmng.height, scrnmng.bpp, SDL_HWSURFACE);
